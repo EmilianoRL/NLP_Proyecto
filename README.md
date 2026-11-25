@@ -4,8 +4,8 @@ Proyecto Final Integrador — Procesamiento de Lenguaje Natural (TC3009C), Tecno
 
 ## Integrantes
 
-- _Nombre 1_ (_matrícula_)
-- _Nombre 2_ (_matrícula_)
+- Diego Octavio Arias Incháustegui (A00838285)
+- Emiliano Ruiz López (A01659693)
 
 ## Descripción
 
