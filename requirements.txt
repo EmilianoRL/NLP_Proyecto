@@ -1,0 +1,13 @@
+torch>=2.1
+numpy
+pandas
+matplotlib
+seaborn
+tqdm
+sacrebleu
+transformers>=4.38
+datasets
+sentencepiece
+sacremoses
+accelerate
+jupyter
