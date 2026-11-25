@@ -31,8 +31,8 @@ Partición determinista 80/10/10 con `random.Random(23)`.
 ## Reproducción
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
-cd <carpeta>
+git clone <https://github.com/EmilianoRL/NLP_Proyecto.git>
+cd <NLP_Proyecto>
 pip install -r requirements.txt
 jupyter notebook
 ```
