@@ -30,14 +30,40 @@ Partición determinista 80/10/10 con `random.Random(23)`.
 
 ## Reproducción
 
+### En Google Colab (recomendado)
+
+1. Abrir cada notebook de `notebooks/` en Colab (pestaña *GitHub* → `EmilianoRL/NLP_Proyecto`), en orden.
+2. Ejecutar todo. La primera celda clona este repositorio y monta Google Drive.
+3. Todo lo que se reutiliza entre notebooks (copia del corpus, vocabularios, checkpoints e historiales de pérdida,
+   figuras) se guarda en `MyDrive/Proyecto_NLP_NMT/`. Si la sesión se desconecta, los notebooks retoman
+   desde el último checkpoint sin reentrenar.
+
+### Local
+
 ```bash
-git clone <https://github.com/EmilianoRL/NLP_Proyecto.git>
-cd <NLP_Proyecto>
+git clone https://github.com/EmilianoRL/NLP_Proyecto.git
+cd NLP_Proyecto
 pip install -r requirements.txt
 jupyter notebook
 ```
 
-Cada notebook descarga el dataset y genera la partición con el bloque de la primera celda. Se recomienda Google Colab con GPU.
+Fuera de Colab, las salidas se guardan en `./outputs/`.
+
+## Estructura del repositorio
+
+```
+common/
+  data.py         descarga del corpus y protocolo obligatorio de filtrado y partición 80/10/10
+  preprocess.py   clean(): minúsculas, sin acentos, sin puntuación (también se usa para normalizar BLEU)
+  vocab.py        build_vocab(): eng_word2idx / spa_word2idx construidos solo con train
+  datasets.py     MyDataset y collate_fn (truncado a MAX_SEQ_LEN=128, padding con <pad>=0)
+  checkpoint.py   guardado / recarga / reanudación de checkpoints en Google Drive
+  metrics.py      BLEU global y por longitud (sacrebleu), perplejidad
+notebooks/
+  01_datos_auditoria.ipynb   partición, Test Audit ID, exploración y vocabularios
+proyecto_final.ipynb         setup inicial (protocolo de datos)
+requirements.txt
+```
 
 ## Resultados
 

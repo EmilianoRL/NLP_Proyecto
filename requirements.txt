@@ -4,6 +4,7 @@ pandas
 matplotlib
 seaborn
 tqdm
+evaluate
 sacrebleu
 transformers>=4.38
 datasets
