@@ -4,6 +4,7 @@ import json
 import random
 import hashlib
 import shutil
+import subprocess
 import zipfile
 import urllib.request
 
@@ -18,26 +19,30 @@ EXPECTED_TEST_AUDIT_ID = 'dbac04ac5648'
 
 
 def download_corpus(data_dir='.', cache_dir=None):
-    # usa spa.txt si ya está; si no, la copia del zip en Drive; si no, lo descarga
+    # usa el zip local; si no, la copia en Drive; si no, lo descarga con wget como en el enunciado
     txt_path = os.path.join(data_dir, CORPUS_TXT)
     zip_path = os.path.join(data_dir, CORPUS_ZIP)
-    if os.path.exists(txt_path):
-        return txt_path
-
     cached_zip = os.path.join(cache_dir, CORPUS_ZIP) if cache_dir else None
-    if cached_zip and os.path.exists(cached_zip):
-        shutil.copy(cached_zip, zip_path)
-    else:
-        # manythings.org a veces rechaza descargas sin user-agent
-        request = urllib.request.Request(CORPUS_URL, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(request) as response, open(zip_path, 'wb') as f:
-            shutil.copyfileobj(response, f)
-        if cache_dir:
-            os.makedirs(cache_dir, exist_ok=True)
-            shutil.copy(zip_path, cached_zip)
 
-    with zipfile.ZipFile(zip_path) as z:
-        z.extract(CORPUS_TXT, data_dir)
+    if not os.path.exists(zip_path):
+        if cached_zip and os.path.exists(cached_zip):
+            shutil.copy(cached_zip, zip_path)
+        elif shutil.which('wget'):
+            # manythings.org rechaza urllib (error 406) pero acepta wget
+            subprocess.run(['wget', '-q', CORPUS_URL, '-O', zip_path], check=True)
+        else:
+            request = urllib.request.Request(CORPUS_URL, headers={'User-Agent': 'Wget/1.21'})
+            with urllib.request.urlopen(request) as response, open(zip_path, 'wb') as f:
+                shutil.copyfileobj(response, f)
+
+    # copia en Drive para que los dos usemos siempre el mismo archivo
+    if cached_zip and not os.path.exists(cached_zip):
+        os.makedirs(cache_dir, exist_ok=True)
+        shutil.copy(zip_path, cached_zip)
+
+    if not os.path.exists(txt_path):
+        with zipfile.ZipFile(zip_path) as z:
+            z.extract(CORPUS_TXT, data_dir)
     return txt_path
 
 

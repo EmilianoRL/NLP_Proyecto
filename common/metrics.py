@@ -41,3 +41,35 @@ def bleu_report(sources, predictions, references):
 def perplexity(total_loss, total_tokens):
     # exp de la pérdida promedio por token (total_loss es la suma, no el promedio por batch)
     return math.exp(total_loss / total_tokens)
+
+
+def measure_latency(translate_one, sentences, device, warmup=10):
+    # ms por oración, traduciendo de una en una (batch = 1, greedy)
+    import time
+    import torch
+    for s in sentences[:warmup]:
+        translate_one(s)
+    if device.type == 'cuda':
+        torch.cuda.synchronize()
+    start = time.perf_counter()
+    for s in sentences:
+        translate_one(s)
+    if device.type == 'cuda':
+        torch.cuda.synchronize()
+    return 1000 * (time.perf_counter() - start) / len(sentences)
+
+
+def gpu_name():
+    import torch
+    return torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'cpu'
+
+
+def save_results(save_dir, model_name, results):
+    # results/<modelo>.json con métricas y predicciones de test (lo usa el notebook final)
+    import os
+    import json
+    os.makedirs(os.path.join(save_dir, 'results'), exist_ok=True)
+    path = os.path.join(save_dir, 'results', f'{model_name}.json')
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(results, f, ensure_ascii=False, indent=1)
+    print('Resultados guardados en', path)

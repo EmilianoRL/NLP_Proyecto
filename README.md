@@ -58,9 +58,11 @@ common/
   vocab.py        build_vocab(): eng_word2idx / spa_word2idx construidos solo con train
   datasets.py     MyDataset y collate_fn (truncado a MAX_SEQ_LEN=128, padding con <pad>=0)
   checkpoint.py   guardado / recarga / reanudación de checkpoints en Google Drive
-  metrics.py      BLEU global y por longitud (sacrebleu), perplejidad
+  metrics.py      BLEU global y por longitud (sacrebleu), perplejidad, latencia
+  model_a.py      Modelo A: encoder BiLSTM + decoder LSTM con atención de producto punto
 notebooks/
   01_datos_auditoria.ipynb   partición, Test Audit ID, exploración y vocabularios
+  02_modeloA.ipynb           entrenamiento y evaluación del Modelo A
 proyecto_final.ipynb         setup inicial (protocolo de datos)
 requirements.txt
 ```
