@@ -1,12 +1,6 @@
-"""
-Métricas de evaluación en test, comunes a los 4 modelos.
-
-BLEU: se usa `evaluate.load('sacrebleu')`, igual que en los notebooks de traducción
-de la clase (cap. 15). Antes de calcularlo se aplica `clean` tanto a predicciones
-como a referencias (Regla 3: normalización simétrica). Las referencias son el texto
-ORIGINAL de test_pairs limpiado, nunca la versión pasada por el vocabulario
-(eso metería <unk> en la referencia e inflaría el BLEU).
-"""
+# BLEU y perplejidad
+# BLEU con evaluate.load('sacrebleu') como en los notebooks de traducción de clase.
+# Se aplica clean() a predicciones y referencias; las referencias son el texto original de test.
 import math
 
 from .preprocess import clean
@@ -24,24 +18,18 @@ def _get_metric():
 
 
 def corpus_bleu(predictions, references):
-    """BLEU de corpus sobre textos normalizados con `clean`."""
     preds = [clean(p) for p in predictions]
-    refs = [[clean(r)] for r in references]   # sacrebleu espera una lista de referencias por oración
+    refs = [[clean(r)] for r in references]
     try:
         return _get_metric().compute(predictions=preds, references=refs)['score']
     except Exception:
-        # Sin acceso al Hub de Hugging Face: misma métrica llamando directo a la librería
-        # sacrebleu (evaluate.load('sacrebleu') es un envoltorio de esta función).
+        # si no se puede descargar la métrica de Hugging Face, sacrebleu directo da lo mismo
         import sacrebleu
         return sacrebleu.corpus_bleu(preds, [[r[0] for r in refs]]).score
 
 
 def bleu_report(sources, predictions, references):
-    """
-    BLEU global y por longitud de la oración fuente (Tabla 1):
-      media = 8-18 palabras en inglés, larga = > 18 palabras.
-    `sources`, `predictions`, `references` son listas alineadas de texto original.
-    """
+    # BLEU global, en oraciones medias (8-18 palabras) y largas (>18)
     report = {'global': corpus_bleu(predictions, references), 'n_global': len(sources)}
     for bucket in ('media', 'larga'):
         idx = [i for i, s in enumerate(sources) if length_bucket(s) == bucket]
@@ -51,9 +39,5 @@ def bleu_report(sources, predictions, references):
 
 
 def perplexity(total_loss, total_tokens):
-    """
-    PPL = exp(cross-entropy promedio por token).
-    Es la misma perplejidad del notebook de N-gramas, (prod 1/P)^(1/N), escrita con logaritmos.
-    `total_loss` debe ser la SUMA de la pérdida sobre todos los tokens (no el promedio por batch).
-    """
+    # exp de la pérdida promedio por token (total_loss es la suma, no el promedio por batch)
     return math.exp(total_loss / total_tokens)
