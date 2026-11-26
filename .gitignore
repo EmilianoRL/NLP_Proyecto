@@ -13,3 +13,8 @@ _about.txt
 __pycache__/
 .ipynb_checkpoints/
 .venv/
+
+# Salidas locales (en Colab todo se guarda en Google Drive)
+outputs/
+checkpoints/
+*.pyc
