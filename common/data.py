@@ -23,6 +23,8 @@ def download_corpus(data_dir='.', cache_dir=None):
     txt_path = os.path.join(data_dir, CORPUS_TXT)
     zip_path = os.path.join(data_dir, CORPUS_ZIP)
     cached_zip = os.path.join(cache_dir, CORPUS_ZIP) if cache_dir else None
+    if os.path.exists(txt_path) and not os.path.exists(zip_path):
+        return txt_path   # spa.txt ya descomprimido (por ejemplo con el !wget del enunciado)
 
     if not os.path.exists(zip_path):
         if cached_zip and os.path.exists(cached_zip):

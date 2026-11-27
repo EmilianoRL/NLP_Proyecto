@@ -63,6 +63,7 @@ common/
 notebooks/
   01_datos_auditoria.ipynb   partición, Test Audit ID, exploración y vocabularios
   02_modeloA.ipynb           entrenamiento y evaluación del Modelo A
+  05_modeloD.ipynb           fine-tuning de Helsinki-NLP/opus-mt-en-es (Modelo D), dos configuraciones
 proyecto_final.ipynb         setup inicial (protocolo de datos)
 requirements.txt
 ```

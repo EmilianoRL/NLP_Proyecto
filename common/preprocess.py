@@ -8,8 +8,7 @@ def clean(text):
     text = text.lower()
     text = unicodedata.normalize('NFD', text)
     text = ''.join(c for c in text if unicodedata.category(c) != 'Mn')   # á -> a, ñ -> n
-    text = re.sub(r"['’`]", '', text)                                    # don't -> dont
-    text = re.sub(r'[^a-z0-9\s]', ' ', text)
+    text = re.sub(r'[^a-z0-9\s]', ' ', text)                             # doctor's -> doctor s
     return ' '.join(text.split())
 
 

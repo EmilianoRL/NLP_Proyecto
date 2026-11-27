@@ -6,7 +6,7 @@ seaborn
 tqdm
 evaluate
 sacrebleu
-transformers>=4.38
+transformers>=4.46
 datasets
 sentencepiece
 sacremoses
